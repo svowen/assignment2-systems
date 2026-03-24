@@ -1,0 +1,52 @@
+Problem (benchmarking_script): 4 points
+a) Write a script to perform basic end-to-end benchmarking of the forward and backward passes in
+your model. Specifically, your script should support the following:
+• Given hyperparameters (e.g., number of layers), initialize a model.
+• Generate a random batch of data.
+• Run w warm-up steps (before you start measuring time), then time the execution of n steps
+(either only forward, or both forward and backward passes, depending on an argument). For
+timing, you can use the Python timeit module (e.g., either using the timeit function, or
+using timeit.default_timer(), which gives you the system’s highest resolution clock, thus
+a better default for benchmarking than time.time()).
+• Call torch.cuda.synchronize() after each step.
+Deliverable: A script that will initialize a basics Transformer model with the given hyperpa-
+rameters, create a random batch of data, and time forward and backward passes.
+(b) Time the forward and backward passes for the model sizes described in §1.1.2. Use 5 warmup
+steps and compute the average and standard deviation of timings over 10 measurement steps.
+How long does a forward pass take? How about a backward pass? Do you see high variability
+across measurements, or is the standard deviation small?
+Deliverable: A 1-2 sentence response with your timings.
+(c) One caveat of benchmarking is not performing the warm-up steps. Repeat your analysis without
+the warm-up steps. How does this affect your results? Why do you think this happens? Also try
+to run the script with 1 or 2 warm-up steps. Why might the result still be different?
+Deliverable: A 2-3 sentence response.
+
+
+
+
+
+
+root@0187ef04282e:/workspace/assignment2-systems/cs336_systems# python para.py
+
+small {'d_model': 768, 'd_ff': 3072, 'num_layers': 12, 'num_heads': 12}
+{'forward_mean_ms': 44.938067719340324, 'forward_std_ms': 0.18810401379058472, 'backward_mean_ms': 87.99200151115656, 'backward_std_ms': 0.1909265047639898, 'forward_times_ms': [44.73940376192331, 44.83055602759123, 45.20978406071663, 44.58235017955303, 44.969034381210804, 45.108746737241745, 44.96405739337206, 44.95492111891508, 45.12359481304884, 44.89822871983051], 'backward_times_ms': [87.82802149653435, 87.99581043422222, 88.45776878297329, 87.8742653876543, 87.9709105938673, 88.06861285120249, 87.79229875653982, 88.00297882407904, 88.07088620960712, 87.85846177488565]}
+
+medium {'d_model': 1024, 'd_ff': 4096, 'num_layers': 24, 'num_heads': 16}
+{'forward_mean_ms': 121.40397680923343, 'forward_std_ms': 0.6128302794375604, 'backward_mean_ms': 233.69985837489367, 'backward_std_ms': 0.5237368062778774, 'forward_times_ms': [121.99266068637371, 121.1447874084115, 121.03231251239777, 122.76517320424318, 121.22416496276855, 120.73681131005287, 121.27584498375654, 120.76584249734879, 121.67553137987852, 121.42663914710283], 'backward_times_ms': [234.7938036546111, 233.8399440050125, 234.07582473009825, 233.2306243479252, 233.7605319917202, 234.01459027081728, 233.38191024959087, 233.66899695247412, 233.16458333283663, 233.0677742138505]}
+
+large {'d_model': 1280, 'd_ff': 5120, 'num_layers': 36, 'num_heads': 20}
+{'forward_mean_ms': 222.95873062685132, 'forward_std_ms': 0.3247398585179521, 'backward_mean_ms': 468.3301572687924, 'backward_std_ms': 0.5282383254609476, 'forward_times_ms': [222.70924784243107, 222.6515170186758, 222.7911353111267, 223.42737391591072, 223.14396779984236, 222.87928871810436, 223.49911089986563, 222.50536363571882, 222.94210642576218, 223.03819470107555], 'backward_times_ms': [467.8849056363106, 468.2983197271824, 467.9833725094795, 467.5884582102299, 468.1120403110981, 468.8859786838293, 467.89441537112, 468.6852302402258, 469.22221407294273, 468.74663792550564]}
+
+xl {'d_model': 1600, 'd_ff': 6400, 'num_layers': 48, 'num_heads': 25}
+{'forward_mean_ms': 434.49087403714657, 'forward_std_ms': 0.869789182528294, 'backward_mean_ms': 860.081201326102, 'backward_std_ms': 1.3007726815562246, 'forward_times_ms': [433.55939630419016, 433.503202162683, 436.58821657299995, 434.0987130999565, 434.1573594138026, 434.5948360860348, 434.4116663560271, 434.3673465773463, 434.9881000816822, 434.639903716743], 'backward_times_ms': [860.6687616556883, 859.3213688582182, 857.2961650788784, 859.441326931119, 859.9450504407287, 860.1780384778976, 859.8544606938958, 861.9401603937149, 860.5374339967966, 861.6292467340827]}
+
+2.7B {'d_model': 2560, 'd_ff': 10240, 'num_layers': 32, 'num_heads': 32}
+{'forward_mean_ms': 580.9394261799753, 'forward_std_ms': 1.7053604994901403, 
+'backward_mean_ms': 1090.6924776732922, 'backward_std_ms': 3.4612339317538963, 
+'forward_times_ms': [578.7652861326933, 579.0009871125221, 579.0556855499744, 579.9556188285351, 
+580.2918439731002, 582.2834111750126, 583.1157276406884, 582.7882764860988, 582.4170904234052, 
+581.7203344777226], 
+'backward_times_ms': [1086.710155941546, 1087.6098684966564, 1087.2440272942185, 1089.0342462807894, 
+1088.318858295679, 1090.7119261100888, 1092.325009405613, 1093.5108615085483, 1095.0880479067564,
+1096.3717754930258]}
+
